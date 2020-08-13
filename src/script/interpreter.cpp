@@ -1031,6 +1031,7 @@ bool EvalScript(std::vector<std::vector<unsigned char> >& stack, const CScript& 
 
                 case OP_CHECKMULTISIG:
                 case OP_CHECKMULTISIGVERIFY:
+                case OP_s_CHECKMULTISIG:
                 {
                     // ([sig ...] num_of_signatures [pubkey ...] num_of_pubkeys -- bool)
 
@@ -1075,6 +1076,13 @@ bool EvalScript(std::vector<std::vector<unsigned char> >& stack, const CScript& 
                     }
 
                     bool fSuccess = true;
+                    // s_CHECKMULTISIGの時の処理
+                    // もし署名と公開鍵の個数が一致していなかったら m of mの認証は明らかにできないので失敗として処理する
+                    if (opcode==OP_s_CHECKMULTISIG){
+                        if (nKeysCount!=nSigsCount){
+                            fSuccess = false;
+                        }
+                    }
                     while (fSuccess && nSigsCount > 0)
                     {
                         valtype& vchSig    = stacktop(-isig);
@@ -1090,6 +1098,12 @@ bool EvalScript(std::vector<std::vector<unsigned char> >& stack, const CScript& 
 
                         // Check signature
                         bool fOk = checker.CheckSig(vchSig, vchPubKey, scriptCode, sigversion);
+                        // s_MULTISIGの時の処理m of m の認証をする必要があるので一つでも認証が通らなかったら失敗扱いになる
+                        if (opcode == OP_s_CHECKMULTISIG){
+                            if (!fOk){
+                                fSuccess = false;
+                            }
+                        }
 
                         if (fOk) {
                             isig++;

@@ -313,6 +313,18 @@ CScript GetScriptForMultisig(int nRequired, const std::vector<CPubKey>& keys)
     return script;
 }
 
+// s_multisig用
+CScript GetScriptFors_Multisig(const std::vector<CPubKey>& keys)
+{
+    CScript script;
+
+    script << CScript::EncodeOP_N(keys.size());// m of m なので、keyの個数と一致させる
+    for (const CPubKey& key : keys)
+        script << ToByteVector(key);
+    script << CScript::EncodeOP_N(keys.size()) << OP_s_CHECKMULTISIG;
+    return script;
+}
+
 CScript GetScriptForWitness(const CScript& redeemscript)
 {
     std::vector<std::vector<unsigned char> > vSolutions;

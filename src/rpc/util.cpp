@@ -189,7 +189,11 @@ CTxDestination AddAndGetMultisigDestination(const int required, const std::vecto
         throw JSONRPCError(RPC_INVALID_PARAMETER, "Number of keys involved in the multisignature address creation > 16\nReduce the number");
     }
 
-    script_out = GetScriptForMultisig(required, pubkeys);
+    if (required==pubkeys.size()) {// requiredとpubkey.size()が一致するときはsMultisigとして扱える
+        script_out = GetScriptFors_Multisig(pubkeys);
+    } else{
+        script_out = GetScriptForMultisig(required, pubkeys);
+    }
 
     if (script_out.size() > MAX_SCRIPT_ELEMENT_SIZE) {
         throw JSONRPCError(RPC_INVALID_PARAMETER, (strprintf("redeemScript exceeds size limit: %d > %d", script_out.size(), MAX_SCRIPT_ELEMENT_SIZE)));

@@ -127,6 +127,7 @@ std::string GetOpName(opcodetype opcode)
     case OP_CHECKSIGVERIFY         : return "OP_CHECKSIGVERIFY";
     case OP_CHECKMULTISIG          : return "OP_CHECKMULTISIG";
     case OP_CHECKMULTISIGVERIFY    : return "OP_CHECKMULTISIGVERIFY";
+    case OP_s_CHECKMULTISIG        : return "OP_s_CHECKMULTISIG"; //s_multisig用に追加した
 
     // expansion
     case OP_NOP1                   : return "OP_NOP1";

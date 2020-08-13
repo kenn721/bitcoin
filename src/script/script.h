@@ -172,6 +172,7 @@ enum opcodetype
     OP_CHECKSIGVERIFY = 0xad,
     OP_CHECKMULTISIG = 0xae,
     OP_CHECKMULTISIGVERIFY = 0xaf,
+    OP_s_CHECKMULTISIG = 0xba, //追記した
 
     // expansion
     OP_NOP1 = 0xb0,
@@ -472,7 +473,7 @@ public:
     bool GetOp(const_iterator& pc, opcodetype& opcodeRet, std::vector<unsigned char>& vchRet) const
     {
         return GetScriptOp(pc, end(), opcodeRet, &vchRet);
-    }
+    } 
 
     bool GetOp(const_iterator& pc, opcodetype& opcodeRet) const
     {
