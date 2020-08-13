@@ -43,6 +43,12 @@ WitnessV0ScriptHash::WitnessV0ScriptHash(const CScript& in)
     CSHA256().Write(in.data(), in.size()).Finalize(begin());
 }
 
+//追加 SHA256を実行するコード,witnessV0特別するために作ったが中身は同じ
+HASH256::HASH256(const CScript& in)
+{
+    CSHA256.Write(in.data(), in.size()).Finalize(begin());
+}
+
 std::string GetTxnOutputType(TxoutType t)
 {
     switch (t)
@@ -283,6 +289,11 @@ public:
     CScript operator()(const WitnessV0ScriptHash& id) const
     {
         return CScript() << OP_0 << ToByteVector(id);
+    }
+    //OP_HASH256を先頭に持ったScriptPubKeyを作成する
+    CScript operator()(const HASH256& id) const
+    {
+        return CScript() << OP_HASH256 << ToByteVector(id) << OP_EQUAL;
     }
 
     CScript operator()(const WitnessUnknown& id) const

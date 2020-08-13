@@ -165,6 +165,13 @@ struct WitnessV0ScriptHash : public BaseHash<uint256>
     explicit WitnessV0ScriptHash(const CScript& script);
 };
 
+struct HASH256 : public BaseHash<uint256>
+{
+    HASH256() : BaseHash() {}
+    explicit HASH256(const uint256& hash) : BaseHash(hash) {}
+    explicit HASH256(const CScript& script);
+};
+
 struct WitnessV0KeyHash : public BaseHash<uint160>
 {
     WitnessV0KeyHash() : BaseHash() {}

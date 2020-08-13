@@ -18,8 +18,10 @@
 static const std::string OUTPUT_TYPE_STRING_LEGACY = "legacy";
 static const std::string OUTPUT_TYPE_STRING_P2SH_SEGWIT = "p2sh-segwit";
 static const std::string OUTPUT_TYPE_STRING_BECH32 = "bech32";
+static const std::string OUTPUT_TYPE_STRING_HASH256 = "hash256";
 
-const std::array<OutputType, 3> OUTPUT_TYPES = {OutputType::LEGACY, OutputType::P2SH_SEGWIT, OutputType::BECH32};
+
+const std::array<OutputType, 4> OUTPUT_TYPES = {OutputType::LEGACY, OutputType::P2SH_SEGWIT, OutputType::BECH32, OutputType::HASH256};
 
 bool ParseOutputType(const std::string& type, OutputType& output_type)
 {
@@ -32,6 +34,9 @@ bool ParseOutputType(const std::string& type, OutputType& output_type)
     } else if (type == OUTPUT_TYPE_STRING_BECH32) {
         output_type = OutputType::BECH32;
         return true;
+    } else if (type == OUTPUT_TYPE_STRING_HASH256) {
+        output_type = OutputType::HASH256;
+        return true;
     }
     return false;
 }
@@ -42,6 +47,7 @@ const std::string& FormatOutputType(OutputType type)
     case OutputType::LEGACY: return OUTPUT_TYPE_STRING_LEGACY;
     case OutputType::P2SH_SEGWIT: return OUTPUT_TYPE_STRING_P2SH_SEGWIT;
     case OutputType::BECH32: return OUTPUT_TYPE_STRING_BECH32;
+    case OutputType::HASH256: return OUTPUT_TYPE_STRING_HASH256;
     } // no default case, so the compiler can warn about missing cases
     assert(false);
 }
@@ -96,8 +102,10 @@ CTxDestination AddAndGetDestinationForScript(FillableSigningProvider& keystore, 
         keystore.AddCScript(witprog);
         if (type == OutputType::BECH32) {
             return witdest;
-        } else {
+        } else if (type == OutputType::P2SH_SEGWIT) {
             return ScriptHash(witprog);
+        } else {
+            return HASH256(witdest);
         }
     }
     } // no default case, so the compiler can warn about missing cases
